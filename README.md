@@ -1,49 +1,21 @@
-# De Mol – versie 3.1
+# De Mol – versie 3.2
 
-Deze versie gebruikt geen `fetch` en geen JSON-laadstap meer.
+Deze versie bestaat uit één zelfstandig `index.html`.
 
-## Belangrijkste bestanden
+Er zijn geen externe JavaScript-, CSS-, JSON- of audiobestanden nodig.
 
+Upload alleen:
 - `index.html`
-- `assets/css/style.css`
-- `assets/js/app.js`
-- `assets/audio/relais.mp3`
-- `opdrachten/opdracht02.js`
 
-## Vragen aanpassen
-
-Open:
-
-`opdrachten/opdracht02.js`
-
-Elke vraag ziet er zo uit:
-
-```javascript
-{
-  "vraag": "Carlo vindt welke eigenschap het belangrijkst?",
-  "A": "Eerlijkheid",
-  "B": "Humor",
-  "C": "Loyaliteit",
-  "D": "Ambitie"
-}
-```
-
-Wijzig alleen de tekst tussen de aanhalingstekens.
-
-## Start
-
-De start werkt volledig automatisch:
-
-- zwart scherm;
-- Opdracht 2;
-- 3;
-- 2;
-- 1;
-- START;
-- vraag 1.
-
-## Teamlinks
-
+Teamlinks:
 - `?team=A`
 - `?team=B`
 - `?team=C`
+
+Na het openen:
+- Opdracht 2
+- 3
+- 2
+- 1
+- START
+- vraag 1

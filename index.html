@@ -3,17 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#000">
+<meta name="theme-color" content="#000000">
 <title>Opdracht 2</title>
-<link rel="stylesheet" href="assets/css/style.css">
+<style>
+:root{--green:#85d148;--text:#f5f7f2;--muted:#99a595;--panel:#0d120d;--line:#253025}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#000;color:var(--text);font-family:Arial,Helvetica,sans-serif}
+body{min-height:100dvh}
+.screen{display:none;min-height:100dvh;padding:20px}
+.screen.active{display:flex}
+#countdown{align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle at center,rgba(76,140,43,.18),transparent 43%),#000}
+.task{font-size:clamp(2rem,8vw,4rem);letter-spacing:.18em;text-transform:uppercase;font-weight:900}
+.count{font-size:clamp(7rem,32vw,15rem);font-weight:900;color:var(--green);line-height:1;margin-top:20px;text-shadow:0 0 40px rgba(133,209,72,.30)}
+.pulse{animation:pulse .75s ease}
+@keyframes pulse{0%{opacity:0;transform:scale(.62)}45%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+.app{width:min(100%,760px);margin:auto;display:flex;flex-direction:column;justify-content:center}
+.header{display:flex;justify-content:space-between;gap:12px;margin-bottom:16px}
+.brand{color:var(--green);font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;font-weight:900}
+.counter{color:var(--muted)}
+.progress{height:5px;background:#182018;border-radius:99px;overflow:hidden;margin-bottom:18px}
+.progress div{height:100%;background:var(--green);width:0;transition:width .3s}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px 20px;min-height:430px;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.55)}
+.kicker{color:var(--green);letter-spacing:.18em;text-transform:uppercase;font-size:.75rem;font-weight:900}
+.question{font-size:clamp(1.45rem,5vw,2.1rem);line-height:1.2;margin:15px 0 24px}
+.options{display:grid;gap:12px;margin-top:auto}
+.option{display:flex;gap:12px;padding:15px 16px;background:#111811;border:1px solid var(--line);border-radius:14px;font-size:1.05rem}
+.letter{color:var(--green);font-weight:900;min-width:1.3em}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+button{border:0;border-radius:14px;padding:15px;font-size:1rem;font-weight:900}
+.primary{background:var(--green);color:#071007}
+.secondary{background:#182018;color:var(--text)}
+button:disabled{opacity:.35}
+.note,.version{color:var(--muted);text-align:center;font-size:.84rem}
+.version{margin-top:8px}
+#content{transition:opacity .22s ease,transform .22s ease}
+.fade-left{opacity:0;transform:translateX(-22px)}
+.fade-right{opacity:0;transform:translateX(22px)}
+#finish{align-items:center;justify-content:center;text-align:center}
+.finish-box{width:min(100%,620px);background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:30px 22px}
+.finish-box h1{font-size:clamp(2rem,8vw,3.4rem)}
+.full{width:100%;margin-top:12px}
+</style>
 </head>
 <body>
-<audio id="clickSound" src="assets/audio/relais.mp3" preload="auto"></audio>
+<audio id="relay" preload="auto" src="data:audio/mpeg;base64,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"></audio>
 
 <section id="countdown" class="screen active">
-  <div class="count-wrap">
+  <div>
     <div id="taskTitle" class="task">Opdracht 2</div>
-    <div id="countNumber" class="count">3</div>
+    <div id="countNumber" class="count pulse">3</div>
   </div>
 </section>
 
@@ -30,7 +68,7 @@
       <button id="next" class="primary">Volgende →</button>
     </div>
     <p class="note">Noteer jullie antwoord op de antwoordkaart.</p>
-    <p id="version" class="version"></p>
+    <p class="version">Versie 3.2</p>
   </main>
 </section>
 
@@ -40,11 +78,136 @@
     <h1>Controleer jullie antwoordkaart.</h1>
     <button id="decoder" class="primary full">Start Decoder →</button>
     <button id="back" class="secondary full">← Terug naar vraag 16</button>
-    <p id="versionEnd" class="version"></p>
+    <p class="version">Versie 3.2</p>
   </div>
 </section>
 
-<script src="opdrachten/opdracht02.js"></script>
-<script src="assets/js/app.js"></script>
+<script>
+'use strict';
+
+const OPDRACHT = {"titel": "Opdracht 2", "versie": "3.2", "decoder_url": "https://hanslefever.github.io/Decoder/", "teams": {"A": {"naam": "Familie A", "vragen": [{"vraag": "Carlo vindt welke eigenschap het belangrijkst bij een vriend?", "A": "Eerlijkheid", "B": "Humor", "C": "Loyaliteit", "D": "Ambitie"}, {"vraag": "Veerle ergert zich het meest aan...", "A": "Te laat komen", "B": "Rommel", "C": "Luidruchtige mensen", "D": "Oneerlijkheid"}, {"vraag": "Tine zou zichzelf het best omschrijven als...", "A": "Rustig", "B": "Sociaal", "C": "Perfectionistisch", "D": "Avontuurlijk"}, {"vraag": "Quinten krijgt onverwacht een vrije dag. Wat doet hij waarschijnlijk?", "A": "Sporten", "B": "Uitslapen", "C": "Afspreken met vrienden", "D": "Een klus afwerken"}, {"vraag": "Maarten droomt het meest van...", "A": "Een strandvakantie", "B": "Een roadtrip", "C": "Een citytrip", "D": "Een vakantie in de bergen"}, {"vraag": "Ninke geeft zonder schuldgevoel geld uit aan...", "A": "Kleding", "B": "Lekker eten", "C": "Hobby's", "D": "Reizen"}, {"vraag": "Ralf zou het liefst wonen...", "A": "In een bruisende stad", "B": "Op het platteland", "C": "Aan zee", "D": "In het buitenland"}, {"vraag": "Valerie ontspant het liefst door...", "A": "Een boek te lezen", "B": "Te wandelen", "C": "Een serie te kijken", "D": "Met vrienden af te spreken"}, {"vraag": "Emma kiest op restaurant meestal...", "A": "Vlees", "B": "Vis", "C": "Pasta", "D": "Vegetarisch"}, {"vraag": "Julie mag één superkracht kiezen. Welke?", "A": "Vliegen", "B": "Onzichtbaar zijn", "C": "Gedachten lezen", "D": "Tijd stilzetten"}, {"vraag": "Carlo wint €100.000. Wat doet hij als eerste?", "A": "Reizen", "B": "Investeren", "C": "Huis verbouwen", "D": "Familie verwennen"}, {"vraag": "Ralf zou het moeilijkst kunnen leven zonder...", "A": "Smartphone", "B": "Auto", "C": "Koffie", "D": "Vakantie"}, {"vraag": "Veerle is de Mol. Haar grootste troef is...", "A": "Goed kunnen liegen", "B": "Onopvallend blijven", "C": "Anderen overtuigen", "D": "Chaos creëren"}, {"vraag": "Emma zou in De Mol meestal...", "A": "Meteen de leiding nemen", "B": "De kat uit de boom kijken", "C": "Iedereen motiveren", "D": "Alles analyseren"}, {"vraag": "Quinten zou het liefst deelnemen aan een opdracht waarbij...", "A": "Logica centraal staat", "B": "Snelheid belangrijk is", "C": "Samenwerking nodig is", "D": "Durf gevraagd wordt"}, {"vraag": "Julie verdenkt in een De Mol-spel meestal...", "A": "De stilste kandidaat", "B": "De luidste kandidaat", "C": "De slimste kandidaat", "D": "De grappigste kandidaat"}]}, "B": {"naam": "Familie B", "vragen": [{"vraag": "Els wordt het gelukkigst van...", "A": "Tijd met familie", "B": "Reizen", "C": "Een hobby", "D": "Rust"}, {"vraag": "Ine bewondert bij anderen vooral...", "A": "Humor", "B": "Eerlijkheid", "C": "Creativiteit", "D": "Doorzettingsvermogen"}, {"vraag": "Mare zou zichzelf omschrijven als...", "A": "Nieuwsgierig", "B": "Rustig", "C": "Spontaan", "D": "Fanatiek"}, {"vraag": "Maxime heeft het meeste moeite met...", "A": "Verliezen", "B": "Wachten", "C": "Stilzitten", "D": "Vroeg opstaan"}, {"vraag": "Ralf kiest als vakantie...", "A": "Bergen", "B": "Strand", "C": "Rondreis", "D": "Citytrip"}, {"vraag": "Valerie koopt spontaan...", "A": "Boeken", "B": "Kleding", "C": "Gadgets", "D": "Lekker eten"}, {"vraag": "Emma begint haar ideale dag met...", "A": "Sport", "B": "Ontbijt", "C": "Muziek", "D": "Nog even slapen"}, {"vraag": "Julie zou een nieuwe hobby kiezen zoals...", "A": "Fotografie", "B": "Duiken", "C": "Schilderen", "D": "Koken"}, {"vraag": "Els kiest het liefst...", "A": "Pizza", "B": "Steak", "C": "Pasta", "D": "Sushi"}, {"vraag": "Ine zou één dag onzichtbaar willen zijn om...", "A": "Mensen te observeren", "B": "Grappen uit te halen", "C": "Op avontuur te gaan", "D": "Helemaal niets"}, {"vraag": "Ralf kan het moeilijkst weerstaan aan...", "A": "Dessert", "B": "Koopjes", "C": "Vakanties boeken", "D": "Een uitdaging"}, {"vraag": "Emma neemt naar een onbewoond eiland mee...", "A": "Een zakmes", "B": "Een boek", "C": "Een telefoon", "D": "Een hengel"}, {"vraag": "Maxime zou als Mol vooral...", "A": "Kleine foutjes maken", "B": "De leiding nemen", "C": "Alles saboteren zonder op te vallen", "D": "Anderen manipuleren"}, {"vraag": "Julie zou in een opdracht als eerste...", "A": "Vrijwilligen", "B": "Observeren", "C": "Overleggen", "D": "Afwachten"}, {"vraag": "Mare zou de Mol het snelst herkennen aan...", "A": "Opvallend gedrag", "B": "Stil gedrag", "C": "Slechte excuses", "D": "Slimme opmerkingen"}, {"vraag": "Valerie zou in De Mol het liefst de rol spelen van...", "A": "Leider", "B": "Analist", "C": "Sfeermaker", "D": "Saboteur"}]}, "C": {"naam": "Familie C", "vragen": [{"vraag": "Els vindt het belangrijkste in een vriendschap...", "A": "Vertrouwen", "B": "Humor", "C": "Respect", "D": "Loyaliteit"}, {"vraag": "Ine ergert zich het meest aan...", "A": "Egoïsme", "B": "Te laat komen", "C": "Oneerlijkheid", "D": "Klagen"}, {"vraag": "Mare zou zichzelf omschrijven als...", "A": "Sociaal", "B": "Rustig", "C": "Avontuurlijk", "D": "Perfectionistisch"}, {"vraag": "Maxime krijgt energie van...", "A": "Mensen", "B": "Sport", "C": "Uitdagingen", "D": "Rust"}, {"vraag": "Carlo zou €10.000 het liefst besteden aan...", "A": "Reizen", "B": "Huis", "C": "Hobby", "D": "Sparen"}, {"vraag": "Veerle kiest het liefst voor...", "A": "Een citytrip", "B": "Een strandvakantie", "C": "Bergen", "D": "Een rondreis"}, {"vraag": "Tine ontspant het liefst door...", "A": "Muziek", "B": "Wandelen", "C": "Lezen", "D": "Tv kijken"}, {"vraag": "Quinten koopt spontaan...", "A": "Elektronica", "B": "Kleding", "C": "Sportmateriaal", "D": "Eten"}, {"vraag": "Maarten kiest op restaurant meestal...", "A": "Vlees", "B": "Vis", "C": "Pasta", "D": "Vegetarisch"}, {"vraag": "Ninke zou liever...", "A": "Vroeg opstaan", "B": "Laat gaan slapen", "C": "Een dutje doen", "D": "Altijd uitslapen"}, {"vraag": "Els zou als dier kiezen voor...", "A": "Hond", "B": "Kat", "C": "Arend", "D": "Dolfijn"}, {"vraag": "Carlo zou het liefst leren...", "A": "Piano spelen", "B": "Vijf talen spreken", "C": "Koken als een chef", "D": "Professioneel fotograferen"}, {"vraag": "Veerle zou als Mol het liefst...", "A": "In stilte saboteren", "B": "Alles sturen", "C": "Anderen laten twijfelen", "D": "Opvallend grappig doen"}, {"vraag": "Maxime zou als kandidaat...", "A": "Meteen iedereen vertrouwen", "B": "Iedereen wantrouwen", "C": "Eerst observeren", "D": "De leiding nemen"}, {"vraag": "Maarten zou in een vrijstellingsopdracht...", "A": "Altijd voor zichzelf kiezen", "B": "Altijd voor de groep kiezen", "C": "Twijfelen tot het einde", "D": "Afhankelijk van de situatie kiezen"}, {"vraag": "Tine zou de Mol het snelst herkennen door...", "A": "Lichaamstaal", "B": "Kleine foutjes", "C": "Verdachte blikken", "D": "Onlogische keuzes"}]}}};
+const params = new URLSearchParams(window.location.search);
+const teamKey = (params.get('team') || 'A').toUpperCase();
+const team = OPDRACHT.teams[teamKey] || OPDRACHT.teams.A;
+let index = 0;
+
+const countdown = document.getElementById('countdown');
+const quiz = document.getElementById('quiz');
+const finish = document.getElementById('finish');
+const countNumber = document.getElementById('countNumber');
+const brand = document.getElementById('brand');
+const counter = document.getElementById('counter');
+const bar = document.getElementById('bar');
+const content = document.getElementById('content');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+const relay = document.getElementById('relay');
+
+brand.textContent = 'De Mol · ' + team.naam;
+
+function show(screen) {
+  countdown.classList.remove('active');
+  quiz.classList.remove('active');
+  finish.classList.remove('active');
+  screen.classList.add('active');
+}
+
+function pulseNumber(value) {
+  countNumber.textContent = value;
+  countNumber.classList.remove('pulse');
+  void countNumber.offsetWidth;
+  countNumber.classList.add('pulse');
+}
+
+function feedback() {
+  if ('vibrate' in navigator) navigator.vibrate(35);
+  try {
+    relay.pause();
+    relay.currentTime = 0;
+    relay.volume = 0.85;
+    relay.play().catch(function() {});
+  } catch (error) {}
+}
+
+function render(direction) {
+  content.classList.add(direction > 0 ? 'fade-right' : 'fade-left');
+
+  window.setTimeout(function() {
+    const q = team.vragen[index];
+    const letters = ['A','B','C','D'];
+
+    content.innerHTML =
+      '<div class="kicker">Vraag ' + (index + 1) + '</div>' +
+      '<h1 class="question">' + q.vraag + '</h1>' +
+      '<div class="options">' +
+      letters.map(function(letter) {
+        return '<div class="option"><span class="letter">' + letter +
+          '</span><span>' + q[letter] + '</span></div>';
+      }).join('') +
+      '</div>';
+
+    content.classList.remove('fade-left', 'fade-right');
+    counter.textContent = (index + 1) + ' / ' + team.vragen.length;
+    bar.style.width = ((index + 1) / team.vragen.length * 100) + '%';
+    prev.disabled = index === 0;
+    next.textContent = index === team.vragen.length - 1
+      ? 'Naar eindscherm →'
+      : 'Volgende →';
+  }, 180);
+}
+
+prev.addEventListener('click', function() {
+  if (index > 0) {
+    feedback();
+    index -= 1;
+    render(-1);
+  }
+});
+
+next.addEventListener('click', function() {
+  feedback();
+  if (index < team.vragen.length - 1) {
+    index += 1;
+    render(1);
+  } else {
+    show(finish);
+  }
+});
+
+document.getElementById('back').addEventListener('click', function() {
+  feedback();
+  index = team.vragen.length - 1;
+  show(quiz);
+  render(-1);
+});
+
+document.getElementById('decoder').addEventListener('click', function() {
+  feedback();
+  window.location.href = OPDRACHT.decoder_url;
+});
+
+function beginCountdown() {
+  pulseNumber('3');
+
+  window.setTimeout(function() {
+    pulseNumber('2');
+
+    window.setTimeout(function() {
+      pulseNumber('1');
+
+      window.setTimeout(function() {
+        pulseNumber('START');
+
+        window.setTimeout(function() {
+          show(quiz);
+          render(1);
+        }, 650);
+      }, 1000);
+    }, 1000);
+  }, 1000);
+}
+
+window.addEventListener('DOMContentLoaded', beginCountdown);
+</script>
 </body>
 </html>
