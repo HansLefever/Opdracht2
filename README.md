@@ -1,21 +1,31 @@
-# De Mol – versie 3.2
+# De Mol – versie 3.3
 
-Deze versie bestaat uit één zelfstandig `index.html`.
+Upload alleen `index.html`.
 
-Er zijn geen externe JavaScript-, CSS-, JSON- of audiobestanden nodig.
+## Teamlinks
 
-Upload alleen:
-- `index.html`
-
-Teamlinks:
+Korte links:
 - `?team=A`
 - `?team=B`
 - `?team=C`
 
-Na het openen:
-- Opdracht 2
-- 3
-- 2
-- 1
-- START
-- vraag 1
+Duidelijke links:
+- `?team=familieA`
+- `?team=familieB`
+- `?team=familieC`
+
+## Vragen aanpassen
+
+Open `index.html` en zoek naar:
+
+`VRAGEN EN ANTWOORDEN AANPASSEN`
+
+Wijzig daar alleen de teksten tussen aanhalingstekens.
+
+Nieuw in 3.3:
+- vloeiendere kaartanimaties;
+- groenere, subtiele gloed;
+- lichte filmgrain;
+- betere smartphoneweergave;
+- duidelijkere teamnamen in de URL;
+- stabiele éénbestand-opbouw.

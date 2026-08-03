@@ -8,8 +8,9 @@
 <style>
 :root{--green:#85d148;--text:#f5f7f2;--muted:#99a595;--panel:#0d120d;--line:#253025}
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#000;color:var(--text);font-family:Arial,Helvetica,sans-serif}
-body{min-height:100dvh}
+html,body{margin:0;min-height:100%;background:#000;color:var(--text);font-family:Arial,Helvetica,sans-serif;overscroll-behavior:none}
+body{min-height:100dvh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;background-image:radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 1px),radial-gradient(circle at 75% 70%,#fff 0 1px,transparent 1px);background-size:4px 4px,5px 5px;mix-blend-mode:screen}
 .screen{display:none;min-height:100dvh;padding:20px}
 .screen.active{display:flex}
 #countdown{align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle at center,rgba(76,140,43,.18),transparent 43%),#000}
@@ -22,27 +23,40 @@ body{min-height:100dvh}
 .brand{color:var(--green);font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;font-weight:900}
 .counter{color:var(--muted)}
 .progress{height:5px;background:#182018;border-radius:99px;overflow:hidden;margin-bottom:18px}
-.progress div{height:100%;background:var(--green);width:0;transition:width .3s}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px 20px;min-height:430px;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.55)}
+.progress div{height:100%;background:linear-gradient(90deg,#4d8f2d,var(--green));width:0;transition:width .45s cubic-bezier(.22,.61,.36,1);box-shadow:0 0 12px rgba(133,209,72,.35)}
+.card{background:linear-gradient(180deg,rgba(17,24,17,.98),rgba(10,14,10,.98));border:1px solid var(--line);border-radius:22px;padding:24px 20px;min-height:430px;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 36px rgba(133,209,72,.07)}
 .kicker{color:var(--green);letter-spacing:.18em;text-transform:uppercase;font-size:.75rem;font-weight:900}
 .question{font-size:clamp(1.45rem,5vw,2.1rem);line-height:1.2;margin:15px 0 24px}
 .options{display:grid;gap:12px;margin-top:auto}
 .option{display:flex;gap:12px;padding:15px 16px;background:#111811;border:1px solid var(--line);border-radius:14px;font-size:1.05rem}
 .letter{color:var(--green);font-weight:900;min-width:1.3em}
 .nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
-button{border:0;border-radius:14px;padding:15px;font-size:1rem;font-weight:900}
+button{border:0;border-radius:14px;padding:15px;font-size:1rem;font-weight:900;min-height:52px;transition:transform .12s ease,filter .12s ease}
+button:active{transform:scale(.98);filter:brightness(.92)}
 .primary{background:var(--green);color:#071007}
 .secondary{background:#182018;color:var(--text)}
 button:disabled{opacity:.35}
 .note,.version{color:var(--muted);text-align:center;font-size:.84rem}
 .version{margin-top:8px}
-#content{transition:opacity .22s ease,transform .22s ease}
-.fade-left{opacity:0;transform:translateX(-22px)}
-.fade-right{opacity:0;transform:translateX(22px)}
+#content{transition:opacity .28s ease,transform .28s cubic-bezier(.22,.61,.36,1);will-change:transform,opacity}
+.fade-left{opacity:0;transform:translateX(-34px)}
+.fade-right{opacity:0;transform:translateX(34px)}
 #finish{align-items:center;justify-content:center;text-align:center}
 .finish-box{width:min(100%,620px);background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:30px 22px}
 .finish-box h1{font-size:clamp(2rem,8vw,3.4rem)}
 .full{width:100%;margin-top:12px}
+@media(max-width:420px){
+  .screen{padding:14px}
+  .card{min-height:400px;padding:20px 16px}
+  .question{font-size:1.38rem}
+  .option{font-size:1rem;padding:14px}
+  .nav{gap:10px}
+}
+@media(max-height:680px){
+  .card{min-height:360px}
+  .question{margin-bottom:16px}
+  .option{padding:12px 14px}
+}
 </style>
 </head>
 <body>
@@ -68,7 +82,7 @@ button:disabled{opacity:.35}
       <button id="next" class="primary">Volgende →</button>
     </div>
     <p class="note">Noteer jullie antwoord op de antwoordkaart.</p>
-    <p class="version">Versie 3.2</p>
+    <p class="version">Versie 3.3</p>
   </main>
 </section>
 
@@ -78,16 +92,28 @@ button:disabled{opacity:.35}
     <h1>Controleer jullie antwoordkaart.</h1>
     <button id="decoder" class="primary full">Start Decoder →</button>
     <button id="back" class="secondary full">← Terug naar vraag 16</button>
-    <p class="version">Versie 3.2</p>
+    <p class="version">Versie 3.3</p>
   </div>
 </section>
 
 <script>
 'use strict';
 
-const OPDRACHT = {"titel": "Opdracht 2", "versie": "3.2", "decoder_url": "https://hanslefever.github.io/Decoder/", "teams": {"A": {"naam": "Familie A", "vragen": [{"vraag": "Carlo vindt welke eigenschap het belangrijkst bij een vriend?", "A": "Eerlijkheid", "B": "Humor", "C": "Loyaliteit", "D": "Ambitie"}, {"vraag": "Veerle ergert zich het meest aan...", "A": "Te laat komen", "B": "Rommel", "C": "Luidruchtige mensen", "D": "Oneerlijkheid"}, {"vraag": "Tine zou zichzelf het best omschrijven als...", "A": "Rustig", "B": "Sociaal", "C": "Perfectionistisch", "D": "Avontuurlijk"}, {"vraag": "Quinten krijgt onverwacht een vrije dag. Wat doet hij waarschijnlijk?", "A": "Sporten", "B": "Uitslapen", "C": "Afspreken met vrienden", "D": "Een klus afwerken"}, {"vraag": "Maarten droomt het meest van...", "A": "Een strandvakantie", "B": "Een roadtrip", "C": "Een citytrip", "D": "Een vakantie in de bergen"}, {"vraag": "Ninke geeft zonder schuldgevoel geld uit aan...", "A": "Kleding", "B": "Lekker eten", "C": "Hobby's", "D": "Reizen"}, {"vraag": "Ralf zou het liefst wonen...", "A": "In een bruisende stad", "B": "Op het platteland", "C": "Aan zee", "D": "In het buitenland"}, {"vraag": "Valerie ontspant het liefst door...", "A": "Een boek te lezen", "B": "Te wandelen", "C": "Een serie te kijken", "D": "Met vrienden af te spreken"}, {"vraag": "Emma kiest op restaurant meestal...", "A": "Vlees", "B": "Vis", "C": "Pasta", "D": "Vegetarisch"}, {"vraag": "Julie mag één superkracht kiezen. Welke?", "A": "Vliegen", "B": "Onzichtbaar zijn", "C": "Gedachten lezen", "D": "Tijd stilzetten"}, {"vraag": "Carlo wint €100.000. Wat doet hij als eerste?", "A": "Reizen", "B": "Investeren", "C": "Huis verbouwen", "D": "Familie verwennen"}, {"vraag": "Ralf zou het moeilijkst kunnen leven zonder...", "A": "Smartphone", "B": "Auto", "C": "Koffie", "D": "Vakantie"}, {"vraag": "Veerle is de Mol. Haar grootste troef is...", "A": "Goed kunnen liegen", "B": "Onopvallend blijven", "C": "Anderen overtuigen", "D": "Chaos creëren"}, {"vraag": "Emma zou in De Mol meestal...", "A": "Meteen de leiding nemen", "B": "De kat uit de boom kijken", "C": "Iedereen motiveren", "D": "Alles analyseren"}, {"vraag": "Quinten zou het liefst deelnemen aan een opdracht waarbij...", "A": "Logica centraal staat", "B": "Snelheid belangrijk is", "C": "Samenwerking nodig is", "D": "Durf gevraagd wordt"}, {"vraag": "Julie verdenkt in een De Mol-spel meestal...", "A": "De stilste kandidaat", "B": "De luidste kandidaat", "C": "De slimste kandidaat", "D": "De grappigste kandidaat"}]}, "B": {"naam": "Familie B", "vragen": [{"vraag": "Els wordt het gelukkigst van...", "A": "Tijd met familie", "B": "Reizen", "C": "Een hobby", "D": "Rust"}, {"vraag": "Ine bewondert bij anderen vooral...", "A": "Humor", "B": "Eerlijkheid", "C": "Creativiteit", "D": "Doorzettingsvermogen"}, {"vraag": "Mare zou zichzelf omschrijven als...", "A": "Nieuwsgierig", "B": "Rustig", "C": "Spontaan", "D": "Fanatiek"}, {"vraag": "Maxime heeft het meeste moeite met...", "A": "Verliezen", "B": "Wachten", "C": "Stilzitten", "D": "Vroeg opstaan"}, {"vraag": "Ralf kiest als vakantie...", "A": "Bergen", "B": "Strand", "C": "Rondreis", "D": "Citytrip"}, {"vraag": "Valerie koopt spontaan...", "A": "Boeken", "B": "Kleding", "C": "Gadgets", "D": "Lekker eten"}, {"vraag": "Emma begint haar ideale dag met...", "A": "Sport", "B": "Ontbijt", "C": "Muziek", "D": "Nog even slapen"}, {"vraag": "Julie zou een nieuwe hobby kiezen zoals...", "A": "Fotografie", "B": "Duiken", "C": "Schilderen", "D": "Koken"}, {"vraag": "Els kiest het liefst...", "A": "Pizza", "B": "Steak", "C": "Pasta", "D": "Sushi"}, {"vraag": "Ine zou één dag onzichtbaar willen zijn om...", "A": "Mensen te observeren", "B": "Grappen uit te halen", "C": "Op avontuur te gaan", "D": "Helemaal niets"}, {"vraag": "Ralf kan het moeilijkst weerstaan aan...", "A": "Dessert", "B": "Koopjes", "C": "Vakanties boeken", "D": "Een uitdaging"}, {"vraag": "Emma neemt naar een onbewoond eiland mee...", "A": "Een zakmes", "B": "Een boek", "C": "Een telefoon", "D": "Een hengel"}, {"vraag": "Maxime zou als Mol vooral...", "A": "Kleine foutjes maken", "B": "De leiding nemen", "C": "Alles saboteren zonder op te vallen", "D": "Anderen manipuleren"}, {"vraag": "Julie zou in een opdracht als eerste...", "A": "Vrijwilligen", "B": "Observeren", "C": "Overleggen", "D": "Afwachten"}, {"vraag": "Mare zou de Mol het snelst herkennen aan...", "A": "Opvallend gedrag", "B": "Stil gedrag", "C": "Slechte excuses", "D": "Slimme opmerkingen"}, {"vraag": "Valerie zou in De Mol het liefst de rol spelen van...", "A": "Leider", "B": "Analist", "C": "Sfeermaker", "D": "Saboteur"}]}, "C": {"naam": "Familie C", "vragen": [{"vraag": "Els vindt het belangrijkste in een vriendschap...", "A": "Vertrouwen", "B": "Humor", "C": "Respect", "D": "Loyaliteit"}, {"vraag": "Ine ergert zich het meest aan...", "A": "Egoïsme", "B": "Te laat komen", "C": "Oneerlijkheid", "D": "Klagen"}, {"vraag": "Mare zou zichzelf omschrijven als...", "A": "Sociaal", "B": "Rustig", "C": "Avontuurlijk", "D": "Perfectionistisch"}, {"vraag": "Maxime krijgt energie van...", "A": "Mensen", "B": "Sport", "C": "Uitdagingen", "D": "Rust"}, {"vraag": "Carlo zou €10.000 het liefst besteden aan...", "A": "Reizen", "B": "Huis", "C": "Hobby", "D": "Sparen"}, {"vraag": "Veerle kiest het liefst voor...", "A": "Een citytrip", "B": "Een strandvakantie", "C": "Bergen", "D": "Een rondreis"}, {"vraag": "Tine ontspant het liefst door...", "A": "Muziek", "B": "Wandelen", "C": "Lezen", "D": "Tv kijken"}, {"vraag": "Quinten koopt spontaan...", "A": "Elektronica", "B": "Kleding", "C": "Sportmateriaal", "D": "Eten"}, {"vraag": "Maarten kiest op restaurant meestal...", "A": "Vlees", "B": "Vis", "C": "Pasta", "D": "Vegetarisch"}, {"vraag": "Ninke zou liever...", "A": "Vroeg opstaan", "B": "Laat gaan slapen", "C": "Een dutje doen", "D": "Altijd uitslapen"}, {"vraag": "Els zou als dier kiezen voor...", "A": "Hond", "B": "Kat", "C": "Arend", "D": "Dolfijn"}, {"vraag": "Carlo zou het liefst leren...", "A": "Piano spelen", "B": "Vijf talen spreken", "C": "Koken als een chef", "D": "Professioneel fotograferen"}, {"vraag": "Veerle zou als Mol het liefst...", "A": "In stilte saboteren", "B": "Alles sturen", "C": "Anderen laten twijfelen", "D": "Opvallend grappig doen"}, {"vraag": "Maxime zou als kandidaat...", "A": "Meteen iedereen vertrouwen", "B": "Iedereen wantrouwen", "C": "Eerst observeren", "D": "De leiding nemen"}, {"vraag": "Maarten zou in een vrijstellingsopdracht...", "A": "Altijd voor zichzelf kiezen", "B": "Altijd voor de groep kiezen", "C": "Twijfelen tot het einde", "D": "Afhankelijk van de situatie kiezen"}, {"vraag": "Tine zou de Mol het snelst herkennen door...", "A": "Lichaamstaal", "B": "Kleine foutjes", "C": "Verdachte blikken", "D": "Onlogische keuzes"}]}}};
+/* =========================================================
+   VRAGEN EN ANTWOORDEN AANPASSEN
+   Wijzig hieronder enkel de teksten tussen aanhalingstekens.
+   ========================================================= */
+const OPDRACHT = {"titel": "Opdracht 2", "versie": "3.3", "decoder_url": "https://hanslefever.github.io/Decoder/", "teams": {"A": {"naam": "Familie A", "vragen": [{"vraag": "Carlo vindt welke eigenschap het belangrijkst bij een vriend?", "A": "Eerlijkheid", "B": "Humor", "C": "Loyaliteit", "D": "Ambitie"}, {"vraag": "Veerle ergert zich het meest aan...", "A": "Te laat komen", "B": "Rommel", "C": "Luidruchtige mensen", "D": "Oneerlijkheid"}, {"vraag": "Tine zou zichzelf het best omschrijven als...", "A": "Rustig", "B": "Sociaal", "C": "Perfectionistisch", "D": "Avontuurlijk"}, {"vraag": "Quinten krijgt onverwacht een vrije dag. Wat doet hij waarschijnlijk?", "A": "Sporten", "B": "Uitslapen", "C": "Afspreken met vrienden", "D": "Een klus afwerken"}, {"vraag": "Maarten droomt het meest van...", "A": "Een strandvakantie", "B": "Een roadtrip", "C": "Een citytrip", "D": "Een vakantie in de bergen"}, {"vraag": "Ninke geeft zonder schuldgevoel geld uit aan...", "A": "Kleding", "B": "Lekker eten", "C": "Hobby's", "D": "Reizen"}, {"vraag": "Ralf zou het liefst wonen...", "A": "In een bruisende stad", "B": "Op het platteland", "C": "Aan zee", "D": "In het buitenland"}, {"vraag": "Valerie ontspant het liefst door...", "A": "Een boek te lezen", "B": "Te wandelen", "C": "Een serie te kijken", "D": "Met vrienden af te spreken"}, {"vraag": "Emma kiest op restaurant meestal...", "A": "Vlees", "B": "Vis", "C": "Pasta", "D": "Vegetarisch"}, {"vraag": "Julie mag één superkracht kiezen. Welke?", "A": "Vliegen", "B": "Onzichtbaar zijn", "C": "Gedachten lezen", "D": "Tijd stilzetten"}, {"vraag": "Carlo wint €100.000. Wat doet hij als eerste?", "A": "Reizen", "B": "Investeren", "C": "Huis verbouwen", "D": "Familie verwennen"}, {"vraag": "Ralf zou het moeilijkst kunnen leven zonder...", "A": "Smartphone", "B": "Auto", "C": "Koffie", "D": "Vakantie"}, {"vraag": "Veerle is de Mol. Haar grootste troef is...", "A": "Goed kunnen liegen", "B": "Onopvallend blijven", "C": "Anderen overtuigen", "D": "Chaos creëren"}, {"vraag": "Emma zou in De Mol meestal...", "A": "Meteen de leiding nemen", "B": "De kat uit de boom kijken", "C": "Iedereen motiveren", "D": "Alles analyseren"}, {"vraag": "Quinten zou het liefst deelnemen aan een opdracht waarbij...", "A": "Logica centraal staat", "B": "Snelheid belangrijk is", "C": "Samenwerking nodig is", "D": "Durf gevraagd wordt"}, {"vraag": "Julie verdenkt in een De Mol-spel meestal...", "A": "De stilste kandidaat", "B": "De luidste kandidaat", "C": "De slimste kandidaat", "D": "De grappigste kandidaat"}]}, "B": {"naam": "Familie B", "vragen": [{"vraag": "Els wordt het gelukkigst van...", "A": "Tijd met familie", "B": "Reizen", "C": "Een hobby", "D": "Rust"}, {"vraag": "Ine bewondert bij anderen vooral...", "A": "Humor", "B": "Eerlijkheid", "C": "Creativiteit", "D": "Doorzettingsvermogen"}, {"vraag": "Mare zou zichzelf omschrijven als...", "A": "Nieuwsgierig", "B": "Rustig", "C": "Spontaan", "D": "Fanatiek"}, {"vraag": "Maxime heeft het meeste moeite met...", "A": "Verliezen", "B": "Wachten", "C": "Stilzitten", "D": "Vroeg opstaan"}, {"vraag": "Ralf kiest als vakantie...", "A": "Bergen", "B": "Strand", "C": "Rondreis", "D": "Citytrip"}, {"vraag": "Valerie koopt spontaan...", "A": "Boeken", "B": "Kleding", "C": "Gadgets", "D": "Lekker eten"}, {"vraag": "Emma begint haar ideale dag met...", "A": "Sport", "B": "Ontbijt", "C": "Muziek", "D": "Nog even slapen"}, {"vraag": "Julie zou een nieuwe hobby kiezen zoals...", "A": "Fotografie", "B": "Duiken", "C": "Schilderen", "D": "Koken"}, {"vraag": "Els kiest het liefst...", "A": "Pizza", "B": "Steak", "C": "Pasta", "D": "Sushi"}, {"vraag": "Ine zou één dag onzichtbaar willen zijn om...", "A": "Mensen te observeren", "B": "Grappen uit te halen", "C": "Op avontuur te gaan", "D": "Helemaal niets"}, {"vraag": "Ralf kan het moeilijkst weerstaan aan...", "A": "Dessert", "B": "Koopjes", "C": "Vakanties boeken", "D": "Een uitdaging"}, {"vraag": "Emma neemt naar een onbewoond eiland mee...", "A": "Een zakmes", "B": "Een boek", "C": "Een telefoon", "D": "Een hengel"}, {"vraag": "Maxime zou als Mol vooral...", "A": "Kleine foutjes maken", "B": "De leiding nemen", "C": "Alles saboteren zonder op te vallen", "D": "Anderen manipuleren"}, {"vraag": "Julie zou in een opdracht als eerste...", "A": "Vrijwilligen", "B": "Observeren", "C": "Overleggen", "D": "Afwachten"}, {"vraag": "Mare zou de Mol het snelst herkennen aan...", "A": "Opvallend gedrag", "B": "Stil gedrag", "C": "Slechte excuses", "D": "Slimme opmerkingen"}, {"vraag": "Valerie zou in De Mol het liefst de rol spelen van...", "A": "Leider", "B": "Analist", "C": "Sfeermaker", "D": "Saboteur"}]}, "C": {"naam": "Familie C", "vragen": [{"vraag": "Els vindt het belangrijkste in een vriendschap...", "A": "Vertrouwen", "B": "Humor", "C": "Respect", "D": "Loyaliteit"}, {"vraag": "Ine ergert zich het meest aan...", "A": "Egoïsme", "B": "Te laat komen", "C": "Oneerlijkheid", "D": "Klagen"}, {"vraag": "Mare zou zichzelf omschrijven als...", "A": "Sociaal", "B": "Rustig", "C": "Avontuurlijk", "D": "Perfectionistisch"}, {"vraag": "Maxime krijgt energie van...", "A": "Mensen", "B": "Sport", "C": "Uitdagingen", "D": "Rust"}, {"vraag": "Carlo zou €10.000 het liefst besteden aan...", "A": "Reizen", "B": "Huis", "C": "Hobby", "D": "Sparen"}, {"vraag": "Veerle kiest het liefst voor...", "A": "Een citytrip", "B": "Een strandvakantie", "C": "Bergen", "D": "Een rondreis"}, {"vraag": "Tine ontspant het liefst door...", "A": "Muziek", "B": "Wandelen", "C": "Lezen", "D": "Tv kijken"}, {"vraag": "Quinten koopt spontaan...", "A": "Elektronica", "B": "Kleding", "C": "Sportmateriaal", "D": "Eten"}, {"vraag": "Maarten kiest op restaurant meestal...", "A": "Vlees", "B": "Vis", "C": "Pasta", "D": "Vegetarisch"}, {"vraag": "Ninke zou liever...", "A": "Vroeg opstaan", "B": "Laat gaan slapen", "C": "Een dutje doen", "D": "Altijd uitslapen"}, {"vraag": "Els zou als dier kiezen voor...", "A": "Hond", "B": "Kat", "C": "Arend", "D": "Dolfijn"}, {"vraag": "Carlo zou het liefst leren...", "A": "Piano spelen", "B": "Vijf talen spreken", "C": "Koken als een chef", "D": "Professioneel fotograferen"}, {"vraag": "Veerle zou als Mol het liefst...", "A": "In stilte saboteren", "B": "Alles sturen", "C": "Anderen laten twijfelen", "D": "Opvallend grappig doen"}, {"vraag": "Maxime zou als kandidaat...", "A": "Meteen iedereen vertrouwen", "B": "Iedereen wantrouwen", "C": "Eerst observeren", "D": "De leiding nemen"}, {"vraag": "Maarten zou in een vrijstellingsopdracht...", "A": "Altijd voor zichzelf kiezen", "B": "Altijd voor de groep kiezen", "C": "Twijfelen tot het einde", "D": "Afhankelijk van de situatie kiezen"}, {"vraag": "Tine zou de Mol het snelst herkennen door...", "A": "Lichaamstaal", "B": "Kleine foutjes", "C": "Verdachte blikken", "D": "Onlogische keuzes"}]}}}; 
+/* ================= EINDE VRAGENBLOK ================= */
+
 const params = new URLSearchParams(window.location.search);
-const teamKey = (params.get('team') || 'A').toUpperCase();
+const rawTeam = (params.get('team') || 'A').toLowerCase();
+const teamAliases = {
+  'a':'A','familiea':'A','familie-a':'A',
+  'b':'B','familieb':'B','familie-b':'B',
+  'c':'C','familiec':'C','familie-c':'C'
+};
+const teamKey = teamAliases[rawTeam] || 'A';
 const team = OPDRACHT.teams[teamKey] || OPDRACHT.teams.A;
 let index = 0;
 
@@ -153,7 +179,7 @@ function render(direction) {
     next.textContent = index === team.vragen.length - 1
       ? 'Naar eindscherm →'
       : 'Volgende →';
-  }, 180);
+  }, 220);
 }
 
 prev.addEventListener('click', function() {
