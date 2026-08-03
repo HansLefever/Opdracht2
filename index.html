@@ -3,26 +3,53 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#050805">
-<title>De Mol – Opdracht 2</title>
-<link rel="stylesheet" href="assets/css/style.css">
+<meta name="theme-color" content="#000000">
+<title>Opdracht 2</title>
+<style>
+:root{--green:#85d148;--text:#f5f7f2;--muted:#99a595;--panel:#0d120d;--line:#253025}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#000;color:var(--text);font-family:Arial,Helvetica,sans-serif}
+body{min-height:100dvh}
+.screen{display:none;min-height:100dvh;padding:20px}
+.screen.active{display:flex}
+#countdown{align-items:center;justify-content:center;text-align:center;background:
+radial-gradient(circle at center,rgba(76,140,43,.16),transparent 42%),#000}
+.task{font-size:clamp(2rem,8vw,4rem);letter-spacing:.18em;text-transform:uppercase;font-weight:900}
+.number{font-size:clamp(7rem,32vw,15rem);font-weight:900;color:var(--green);line-height:1;margin-top:20px;
+text-shadow:0 0 40px rgba(133,209,72,.28);animation:pulse .8s ease}
+@keyframes pulse{0%{opacity:0;transform:scale(.65)}45%{opacity:1;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+.app{width:min(100%,760px);margin:auto;display:flex;flex-direction:column;justify-content:center}
+.header{display:flex;justify-content:space-between;gap:12px;margin-bottom:16px}
+.brand{color:var(--green);font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;font-weight:900}
+.counter{color:var(--muted)}
+.progress{height:5px;background:#182018;border-radius:99px;overflow:hidden;margin-bottom:18px}
+.progress div{height:100%;background:var(--green);width:0;transition:width .3s}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px 20px;min-height:430px;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.55)}
+.kicker{color:var(--green);letter-spacing:.18em;text-transform:uppercase;font-size:.75rem;font-weight:900}
+.question{font-size:clamp(1.45rem,5vw,2.1rem);line-height:1.2;margin:15px 0 24px}
+.options{display:grid;gap:12px;margin-top:auto}
+.option{display:flex;gap:12px;padding:15px 16px;background:#111811;border:1px solid var(--line);border-radius:14px;font-size:1.05rem}
+.letter{color:var(--green);font-weight:900;min-width:1.3em}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+button{border:0;border-radius:14px;padding:15px;font-size:1rem;font-weight:900}
+.primary{background:var(--green);color:#071007}.secondary{background:#182018;color:var(--text)}button:disabled{opacity:.35}
+.note,.version{color:var(--muted);text-align:center;font-size:.84rem}.version{margin-top:8px}
+#finish{align-items:center;justify-content:center;text-align:center}
+.finish-box{width:min(100%,620px);background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:30px 22px}
+.finish-box h1{font-size:clamp(2rem,8vw,3.4rem)}.full{width:100%;margin-top:12px}
+</style>
 </head>
 <body>
-<main class="app">
-  <section id="intro" class="screen active">
-    <div class="panel countdown-panel">
-      <div class="eyebrow">De Mol</div>
-      <h1>Opdracht 2</h1>
-      <div id="countdown" class="countdown">3</div>
-      <p id="version" class="version">Versie 2.1</p>
-    </div>
-  </section>
+<section id="countdown" class="screen active">
+  <div>
+    <div class="task">Opdracht 2</div>
+    <div id="number" class="number">3</div>
+  </div>
+</section>
 
-  <section id="quiz" class="screen">
-    <div class="header">
-      <div id="brand" class="brand"></div>
-      <div id="counter" class="counter"></div>
-    </div>
+<section id="quiz" class="screen">
+  <main class="app">
+    <div class="header"><div id="brand" class="brand"></div><div id="counter" class="counter"></div></div>
     <div class="progress"><div id="bar"></div></div>
     <article class="card"><div id="content"></div></article>
     <div class="nav">
@@ -30,25 +57,85 @@
       <button id="next" class="primary">Volgende →</button>
     </div>
     <p class="note">Noteer jullie antwoord op de antwoordkaart.</p>
-  </section>
+    <p class="version">Versie 2.2</p>
+  </main>
+</section>
 
-  <section id="finish" class="screen">
-    <div class="panel">
-      <div class="eyebrow">Opdracht voltooid</div>
-      <h1>Alle antwoorden genoteerd?</h1>
-      <p class="lead">Controleer jullie antwoordkaart en ga daarna verder naar de Decoder.</p>
-      <button id="decoderBtn" class="primary full">Start Decoder →</button>
-      <button id="backBtn" class="secondary full">← Terug naar vraag 16</button>
-      <p class="version">Versie 2.1</p>
-    </div>
-  </section>
-</main>
+<section id="finish" class="screen">
+  <div class="finish-box">
+    <div class="kicker">Opdracht voltooid</div>
+    <h1>Controleer jullie antwoordkaart.</h1>
+    <button id="decoder" class="primary full">Start Decoder →</button>
+    <button id="back" class="secondary full">← Terug naar vraag 16</button>
+    <p class="version">Versie 2.2</p>
+  </div>
+</section>
+
 <script>
-  const teamKey=(new URLSearchParams(location.search).get('team')||'A').toUpperCase();
-  const safeTeam=['A','B','C'].includes(teamKey)?teamKey:'A';
-  document.write('<script src="data/instellingen.js"><\/script>');
-  document.write('<script src="data/team'+safeTeam+'.js"><\/script>');
+const DATA={"A": {"label": "Familie A", "questions": [["Carlo vindt welke eigenschap het belangrijkst bij een vriend?", ["Eerlijkheid", "Humor", "Loyaliteit", "Ambitie"]], ["Veerle ergert zich het meest aan...", ["Te laat komen", "Rommel", "Luidruchtige mensen", "Oneerlijkheid"]], ["Tine zou zichzelf het best omschrijven als...", ["Rustig", "Sociaal", "Perfectionistisch", "Avontuurlijk"]], ["Quinten krijgt onverwacht een vrije dag. Wat doet hij waarschijnlijk?", ["Sporten", "Uitslapen", "Afspreken met vrienden", "Een klus afwerken"]], ["Maarten droomt het meest van...", ["Een strandvakantie", "Een roadtrip", "Een citytrip", "Een vakantie in de bergen"]], ["Ninke geeft zonder schuldgevoel geld uit aan...", ["Kleding", "Lekker eten", "Hobby's", "Reizen"]], ["Ralf zou het liefst wonen...", ["In een bruisende stad", "Op het platteland", "Aan zee", "In het buitenland"]], ["Valerie ontspant het liefst door...", ["Een boek te lezen", "Te wandelen", "Een serie te kijken", "Met vrienden af te spreken"]], ["Emma kiest op restaurant meestal...", ["Vlees", "Vis", "Pasta", "Vegetarisch"]], ["Julie mag één superkracht kiezen. Welke?", ["Vliegen", "Onzichtbaar zijn", "Gedachten lezen", "Tijd stilzetten"]], ["Carlo wint €100.000. Wat doet hij als eerste?", ["Reizen", "Investeren", "Huis verbouwen", "Familie verwennen"]], ["Ralf zou het moeilijkst kunnen leven zonder...", ["Smartphone", "Auto", "Koffie", "Vakantie"]], ["Veerle is de Mol. Haar grootste troef is...", ["Goed kunnen liegen", "Onopvallend blijven", "Anderen overtuigen", "Chaos creëren"]], ["Emma zou in De Mol meestal...", ["Meteen de leiding nemen", "De kat uit de boom kijken", "Iedereen motiveren", "Alles analyseren"]], ["Quinten zou het liefst deelnemen aan een opdracht waarbij...", ["Logica centraal staat", "Snelheid belangrijk is", "Samenwerking nodig is", "Durf gevraagd wordt"]], ["Julie verdenkt in een De Mol-spel meestal...", ["De stilste kandidaat", "De luidste kandidaat", "De slimste kandidaat", "De grappigste kandidaat"]]]}, "B": {"label": "Familie B", "questions": [["Els wordt het gelukkigst van...", ["Tijd met familie", "Reizen", "Een hobby", "Rust"]], ["Ine bewondert bij anderen vooral...", ["Humor", "Eerlijkheid", "Creativiteit", "Doorzettingsvermogen"]], ["Mare zou zichzelf omschrijven als...", ["Nieuwsgierig", "Rustig", "Spontaan", "Fanatiek"]], ["Maxime heeft het meeste moeite met...", ["Verliezen", "Wachten", "Stilzitten", "Vroeg opstaan"]], ["Ralf kiest als vakantie...", ["Bergen", "Strand", "Rondreis", "Citytrip"]], ["Valerie koopt spontaan...", ["Boeken", "Kleding", "Gadgets", "Lekker eten"]], ["Emma begint haar ideale dag met...", ["Sport", "Ontbijt", "Muziek", "Nog even slapen"]], ["Julie zou een nieuwe hobby kiezen zoals...", ["Fotografie", "Duiken", "Schilderen", "Koken"]], ["Els kiest het liefst...", ["Pizza", "Steak", "Pasta", "Sushi"]], ["Ine zou één dag onzichtbaar willen zijn om...", ["Mensen te observeren", "Grappen uit te halen", "Op avontuur te gaan", "Helemaal niets"]], ["Ralf kan het moeilijkst weerstaan aan...", ["Dessert", "Koopjes", "Vakanties boeken", "Een uitdaging"]], ["Emma neemt naar een onbewoond eiland mee...", ["Een zakmes", "Een boek", "Een telefoon", "Een hengel"]], ["Maxime zou als Mol vooral...", ["Kleine foutjes maken", "De leiding nemen", "Alles saboteren zonder op te vallen", "Anderen manipuleren"]], ["Julie zou in een opdracht als eerste...", ["Vrijwilligen", "Observeren", "Overleggen", "Afwachten"]], ["Mare zou de Mol het snelst herkennen aan...", ["Opvallend gedrag", "Stil gedrag", "Slechte excuses", "Slimme opmerkingen"]], ["Valerie zou in De Mol het liefst de rol spelen van...", ["Leider", "Analist", "Sfeermaker", "Saboteur"]]]}, "C": {"label": "Familie C", "questions": [["Els vindt het belangrijkste in een vriendschap...", ["Vertrouwen", "Humor", "Respect", "Loyaliteit"]], ["Ine ergert zich het meest aan...", ["Egoïsme", "Te laat komen", "Oneerlijkheid", "Klagen"]], ["Mare zou zichzelf omschrijven als...", ["Sociaal", "Rustig", "Avontuurlijk", "Perfectionistisch"]], ["Maxime krijgt energie van...", ["Mensen", "Sport", "Uitdagingen", "Rust"]], ["Carlo zou €10.000 het liefst besteden aan...", ["Reizen", "Huis", "Hobby", "Sparen"]], ["Veerle kiest het liefst voor...", ["Een citytrip", "Een strandvakantie", "Bergen", "Een rondreis"]], ["Tine ontspant het liefst door...", ["Muziek", "Wandelen", "Lezen", "Tv kijken"]], ["Quinten koopt spontaan...", ["Elektronica", "Kleding", "Sportmateriaal", "Eten"]], ["Maarten kiest op restaurant meestal...", ["Vlees", "Vis", "Pasta", "Vegetarisch"]], ["Ninke zou liever...", ["Vroeg opstaan", "Laat gaan slapen", "Een dutje doen", "Altijd uitslapen"]], ["Els zou als dier kiezen voor...", ["Hond", "Kat", "Arend", "Dolfijn"]], ["Carlo zou het liefst leren...", ["Piano spelen", "Vijf talen spreken", "Koken als een chef", "Professioneel fotograferen"]], ["Veerle zou als Mol het liefst...", ["In stilte saboteren", "Alles sturen", "Anderen laten twijfelen", "Opvallend grappig doen"]], ["Maxime zou als kandidaat...", ["Meteen iedereen vertrouwen", "Iedereen wantrouwen", "Eerst observeren", "De leiding nemen"]], ["Maarten zou in een vrijstellingsopdracht...", ["Altijd voor zichzelf kiezen", "Altijd voor de groep kiezen", "Twijfelen tot het einde", "Afhankelijk van de situatie kiezen"]], ["Tine zou de Mol het snelst herkennen door...", ["Lichaamstaal", "Kleine foutjes", "Verdachte blikken", "Onlogische keuzes"]]]}};
+const key=(new URLSearchParams(location.search).get('team')||'A').toUpperCase();
+const team=DATA[key]||DATA.A;
+let index=0,audioCtx;
+
+const countdown=document.getElementById('countdown');
+const quiz=document.getElementById('quiz');
+const finish=document.getElementById('finish');
+const number=document.getElementById('number');
+const content=document.getElementById('content');
+const counter=document.getElementById('counter');
+const bar=document.getElementById('bar');
+const prev=document.getElementById('prev');
+const next=document.getElementById('next');
+
+document.getElementById('brand').textContent='De Mol · '+team.label;
+
+function show(screen){
+  [countdown,quiz,finish].forEach(s=>s.classList.remove('active'));
+  screen.classList.add('active');
+}
+
+function feedback(){
+  if('vibrate' in navigator) navigator.vibrate(35);
+  try{
+    audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain(),t=audioCtx.currentTime;
+    o.frequency.setValueAtTime(700,t);o.frequency.exponentialRampToValueAtTime(440,t+.05);
+    g.gain.setValueAtTime(.1,t);g.gain.exponentialRampToValueAtTime(.001,t+.07);
+    o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+.08);
+  }catch(e){}
+}
+
+function render(){
+  const q=team.questions[index],letters=['A','B','C','D'];
+  content.innerHTML='<div class="kicker">Vraag '+(index+1)+'</div>'+
+    '<h1 class="question">'+q[0]+'</h1>'+
+    '<div class="options">'+q[1].map((a,i)=>'<div class="option"><span class="letter">'+letters[i]+'</span><span>'+a+'</span></div>').join('')+'</div>';
+  counter.textContent=(index+1)+' / '+team.questions.length;
+  bar.style.width=((index+1)/team.questions.length*100)+'%';
+  prev.disabled=index===0;
+  next.textContent=index===team.questions.length-1?'Naar eindscherm →':'Volgende →';
+}
+
+let count=3;
+const timer=setInterval(()=>{
+  count--;
+  if(count>0){
+    number.textContent=count;
+    number.style.animation='none';
+    void number.offsetWidth;
+    number.style.animation='pulse .8s ease';
+  }else{
+    clearInterval(timer);
+    number.textContent='START';
+    setTimeout(()=>{show(quiz);render()},650);
+  }
+},1000);
+
+prev.onclick=()=>{if(index>0){feedback();index--;render()}};
+next.onclick=()=>{feedback();if(index<team.questions.length-1){index++;render()}else show(finish)};
+document.getElementById('back').onclick=()=>{feedback();show(quiz);index=15;render()};
+document.getElementById('decoder').onclick=()=>{feedback();location.href='https://hanslefever.github.io/Decoder/'};
 </script>
-<script src="assets/js/app.js"></script>
 </body>
 </html>

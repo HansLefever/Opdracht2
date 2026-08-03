@@ -1,30 +1,18 @@
-# De Mol – versie 2.1
+# De Mol – versie 2.2
 
-## Start
-De pagina toont automatisch:
+Deze versie is volledig zelfstandig en gebruikt alleen `index.html`.
 
-- Opdracht 2
-- 3
-- 2
-- 1
-- daarna vraag 1
-
-Er is geen laadknop en geen fetch-opdracht meer. Daardoor kan het startscherm niet op “Dossier laden” blijven hangen.
-
-## Vragen aanpassen
-De makkelijkst leesbare bestanden blijven:
-- `data/teamA.json`
-- `data/teamB.json`
-- `data/teamC.json`
-
-De website gebruikt voor maximale betrouwbaarheid ook:
-- `data/teamA.js`
-- `data/teamB.js`
-- `data/teamC.js`
-
-Pas bij wijzigingen dus het overeenkomstige `.js`-bestand aan, of zet dezelfde inhoud vanuit JSON opnieuw om naar JS.
-
-## Teamlinks
+Links:
 - `?team=A`
 - `?team=B`
 - `?team=C`
+
+Start:
+- zwart scherm
+- Opdracht 2
+- automatische aftelling 3, 2, 1
+- daarna vraag 1
+
+Na vraag 16:
+- eindscherm
+- knop Start Decoder
