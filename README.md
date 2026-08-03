@@ -1,21 +1,47 @@
-# De Mol – versie 2.4
+# De Mol – versie 3.0
 
-Deze versie is volledig zelfstandig en gebruikt alleen `index.html`.
+## Belangrijkste bestanden
 
-Links:
+- `index.html`
+- `assets/css/style.css`
+- `assets/js/app.js`
+- `assets/audio/relais.mp3`
+- `opdrachten/opdracht02.json`
+
+## Vragen aanpassen
+
+Open:
+
+`opdrachten/opdracht02.json`
+
+Elke vraag ziet er zo uit:
+
+```json
+{
+  "vraag": "Carlo vindt welke eigenschap het belangrijkst?",
+  "A": "Eerlijkheid",
+  "B": "Humor",
+  "C": "Loyaliteit",
+  "D": "Ambitie"
+}
+```
+
+Je hoeft alleen de tekst tussen de aanhalingstekens te wijzigen.
+
+## Teamlinks
+
 - `?team=A`
 - `?team=B`
 - `?team=C`
 
-Start:
-- zwart scherm
-- Opdracht 2
-- automatische aftelling 3, 2, 1
-- daarna vraag 1
+## Geluid
 
-Na vraag 16:
-- eindscherm
-- knop Start Decoder
+De mechanische klik staat in:
 
+`assets/audio/relais.mp3`
 
-Nieuw in 2.4: mechanische relaisklik en richtingsgevoelige schuifanimaties.
+Omdat dit een echt audiobestand is, werkt het betrouwbaarder dan een gegenereerde Web Audio-piep.
+
+## GitHub Pages
+
+Upload alle bestanden en mappen naar de root van je repository.
