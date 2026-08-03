@@ -1,4 +1,4 @@
-# De Mol – versie 2.2
+# De Mol – versie 2.4
 
 Deze versie is volledig zelfstandig en gebruikt alleen `index.html`.
 
@@ -16,3 +16,6 @@ Start:
 Na vraag 16:
 - eindscherm
 - knop Start Decoder
+
+
+Nieuw in 2.4: mechanische relaisklik en richtingsgevoelige schuifanimaties.
