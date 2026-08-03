@@ -1,4 +1,6 @@
-# De Mol – versie 3.0
+# De Mol – versie 3.1
+
+Deze versie gebruikt geen `fetch` en geen JSON-laadstap meer.
 
 ## Belangrijkste bestanden
 
@@ -6,17 +8,17 @@
 - `assets/css/style.css`
 - `assets/js/app.js`
 - `assets/audio/relais.mp3`
-- `opdrachten/opdracht02.json`
+- `opdrachten/opdracht02.js`
 
 ## Vragen aanpassen
 
 Open:
 
-`opdrachten/opdracht02.json`
+`opdrachten/opdracht02.js`
 
 Elke vraag ziet er zo uit:
 
-```json
+```javascript
 {
   "vraag": "Carlo vindt welke eigenschap het belangrijkst?",
   "A": "Eerlijkheid",
@@ -26,22 +28,22 @@ Elke vraag ziet er zo uit:
 }
 ```
 
-Je hoeft alleen de tekst tussen de aanhalingstekens te wijzigen.
+Wijzig alleen de tekst tussen de aanhalingstekens.
+
+## Start
+
+De start werkt volledig automatisch:
+
+- zwart scherm;
+- Opdracht 2;
+- 3;
+- 2;
+- 1;
+- START;
+- vraag 1.
 
 ## Teamlinks
 
 - `?team=A`
 - `?team=B`
 - `?team=C`
-
-## Geluid
-
-De mechanische klik staat in:
-
-`assets/audio/relais.mp3`
-
-Omdat dit een echt audiobestand is, werkt het betrouwbaarder dan een gegenereerde Web Audio-piep.
-
-## GitHub Pages
-
-Upload alle bestanden en mappen naar de root van je repository.
